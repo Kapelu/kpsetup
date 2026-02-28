@@ -12,13 +12,11 @@
 
 <div align="center">
 
-------------------------------------------------------------------------
 
-# Descripción general
+## Descripción general
 
 `script-setup` es una colección de utilidades de terminal ***post-install*** orientadas al rendimiento, diseñadas para mejorar la productividad de los desarrolladores en sistemas Ubuntu. El proyecto prioriza la baja sobrecarga, la arquitectura modular de Bash y un comportamiento de ejecución predecible.
 
-------------------------------------------------------------------------
 
 </div>
 
@@ -30,7 +28,7 @@
 
 
 
-## 🧹 node-clean
+### *** 🧹 node-clean***
 
 Herramienta CLI interactiva para localizar y eliminar `node_modules` y `.next` dentro de un árbol de directorios. Se pueden agregar más carpetas o archivos.
 
@@ -51,10 +49,7 @@ TARGETS=("node_modules" ".next")()
 ```
 
 ------------------------------------------------------------------------
-
-<div align="center">
-<p style='margin: 0 0 2rem; font-size: 1.5rem;'>✅ Motor de prompts de Bash optimizado (<strong>.bashrc</strong>)</p >
-</div>
+### ***✅ Motor de prompts de Bash optimizado (.bashrc)***
 
 El archivo implementa un prompt dinámico optimizado con cacheo inteligente, orientado a entornos de desarrollo Node/Next.js.
 
