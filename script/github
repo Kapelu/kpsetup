@@ -183,7 +183,6 @@ EOF
 # Utilizar el comando pasado como argumento
 # ─────────────────────────────
 header
-
 case "${1:-help}" in
     commit)  shift; cmd_commit "$@" ;;
     date)    cmd_date ;;
