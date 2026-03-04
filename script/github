@@ -15,8 +15,7 @@ DATE=$(date "+%d-%m-%Y")
 USER_NAME=$(whoami)
 HOSTNAME=$(hostname)
 
-# ─────────────────────────────
-# UI
+# variables de UI
 # ─────────────────────────────
 bold='\033[1m'
 italic='\033[3m'
@@ -25,6 +24,8 @@ green='\033[32m'
 yellow='\033[33m'
 reset='\033[0m'
 
+# funciones de UI
+# ─────────────────────────────
 error()   { echo ""; echo -e "${italic}${bold}${red} ❌ $1${reset}" >&2; exit 1; echo ""; }
 info()    { echo ""; echo -e "${italic}${bold}${yellow} ℹ️  $1${reset}"; echo ""; }
 success() { echo ""; echo -e "${italic}${bold}${green} ✔ $1${reset}"; echo ""; }
@@ -44,11 +45,10 @@ has_changes() {
     [[ -n "$(git status -s)" ]]
 }
 
-# ─────────────────────────────
-# CONVENTIONAL COMMITS
+# tipos de commit permitidos para Conventional Commits
 # ─────────────────────────────
 VALID_TYPES=("feat" "fix" "docs" "style" "refactor" "perf" "test" "chore")
-
+#"hazaña" "arreglo" "documentación" "estilo" "refactorización" "rendimiento" "prueba" "tarea" 
 is_valid_type() {
     local type="$1"
     for t in "${VALID_TYPES[@]}"; do
@@ -57,6 +57,8 @@ is_valid_type() {
     return 1
 }
 
+# comando para hacer commit con formato Conventional Commits + push
+# ─────────────────────────────
 cmd_commit() {
     require_git_repo
 
@@ -79,12 +81,9 @@ cmd_commit() {
     git commit -m "${type}: ${message}"
     git push
 
-    success "Commit & Push realizado."
+    success "Commit ${type}: ${message} & Push realizado realizado con éxito!!!"
 }
 
-# ─────────────────────────────
-# SEMANTIC VERSIONING
-# ─────────────────────────────
 get_latest_tag() {
     git tag --sort=-v:refname | head -n 1
 }
@@ -145,8 +144,7 @@ cmd_release() {
     success "Release creada: ${new_version}"
 }
 
-# ─────────────────────────────
-# DATE COMMIT
+# comando para hacer commit automático con fecha actual + push
 # ─────────────────────────────
 cmd_date() {
     require_git_repo
@@ -163,8 +161,7 @@ cmd_date() {
     success "Commit con fecha ${DATE} realizado."
 }
 
-# ─────────────────────────────
-# HELP
+# comando para mostrar ayuda
 # ─────────────────────────────
 cmd_help() {
 cat <<EOF
@@ -183,8 +180,7 @@ Comandos:
 EOF
 }
 
-# ─────────────────────────────
-# ROUTER
+# Utilizar el comando pasado como argumento
 # ─────────────────────────────
 header
 
