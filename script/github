@@ -92,7 +92,7 @@ increment_version() {
     local version="$1"
     local part="$2"
 
-    version="${version#v}"
+    version="${version#}"
     IFS='.' read -r major minor patch <<< "$version"
 
     case "$part" in
