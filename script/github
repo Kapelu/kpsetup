@@ -10,7 +10,7 @@ clear
 set -Eeuo pipefail
 IFS=$'\n\t'
 
-VERSION="2.0.0"
+VERSION=" 2.0.0"
 DATE=$(date "+%d-%m-%Y")
 USER_NAME=$(whoami)
 HOSTNAME=$(hostname)
@@ -113,7 +113,7 @@ increment_version() {
             ;;
     esac
 
-    echo "v${major}.${minor}.${patch}"
+    echo "${major}.${minor}.${patch}"
 }
 
 cmd_release() {
