@@ -5,7 +5,7 @@
 # │ Autor: Daniel Calderon - Kapelu                    │
 # │ WebSite: https://danielcalderon.vercel.app/        │
 # │ Github: https://github.com/Kapelu                  │
-# │ Fecha: 16/10/2025                                  │
+# │ Fecha: 16/02/2026                                  │
 # ╚════════════════════════════════════════════════════╝
 # Variables para cachear info de PWD, gestor y git branch
 # =============================================================================

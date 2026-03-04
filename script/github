@@ -1,0 +1,196 @@
+#!/usr/bin/env bash
+# ╔════════════════════════════════════════════════════╗
+# │ github – Herramientas para Git                     │
+# │ Versión: 3.5                                       │
+# │ Autor: Daniel Calderon - Kapelu                    │
+# │ Fecha: 16/02/2026                                  │
+# │ WebSite: https://danielcalderon.vercel.app/        │
+# ╚════════════════════════════════════════════════════╝
+clear
+set -Eeuo pipefail
+IFS=$'\n\t'
+
+VERSION="2.0.0"
+DATE=$(date "+%d-%m-%Y")
+USER_NAME=$(whoami)
+HOSTNAME=$(hostname)
+
+# ─────────────────────────────
+# UI
+# ─────────────────────────────
+bold='\033[1m'
+italic='\033[3m'
+red='\033[31m'
+green='\033[32m'
+yellow='\033[33m'
+reset='\033[0m'
+
+error()   { echo ""; echo -e "${italic}${bold}${red} ❌ $1${reset}" >&2; exit 1; echo ""; }
+info()    { echo ""; echo -e "${italic}${bold}${yellow} ℹ️  $1${reset}"; echo ""; }
+success() { echo ""; echo -e "${italic}${bold}${green} ✔ $1${reset}"; echo ""; }
+
+header() {
+    echo ""
+    echo -e "   ${italic}${bold}${yellow}Hola ${USER_NAME} en ${HOSTNAME} !!!${reset}"
+    echo ""
+}
+
+require_git_repo() {
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 \
+        || error "No estás dentro de un repositorio Git."
+}
+
+has_changes() {
+    [[ -n "$(git status -s)" ]]
+}
+
+# ─────────────────────────────
+# CONVENTIONAL COMMITS
+# ─────────────────────────────
+VALID_TYPES=("feat" "fix" "docs" "style" "refactor" "perf" "test" "chore")
+
+is_valid_type() {
+    local type="$1"
+    for t in "${VALID_TYPES[@]}"; do
+        [[ "$t" == "$type" ]] && return 0
+    done
+    return 1
+}
+
+cmd_commit() {
+    require_git_repo
+
+    local type=${1:-}
+    local message=${2:-}
+
+    [[ -z "$type" ]] && error "Uso: gh commit <type> \"mensaje\""
+    [[ -z "$message" ]] && error "Mensaje requerido."
+
+    if ! is_valid_type "$type"; then
+        error "Tipo inválido. Permitidos: ${VALID_TYPES[*]}"
+    fi
+
+    if ! has_changes; then
+        info "No hay cambios pendientes."
+        exit 0
+    fi
+
+    git add -A
+    git commit -m "${type}: ${message}"
+    git push
+
+    success "Commit & Push realizado."
+}
+
+# ─────────────────────────────
+# SEMANTIC VERSIONING
+# ─────────────────────────────
+get_latest_tag() {
+    git tag --sort=-v:refname | head -n 1
+}
+
+increment_version() {
+    local version="$1"
+    local part="$2"
+
+    version="${version#v}"
+    IFS='.' read -r major minor patch <<< "$version"
+
+    case "$part" in
+        major)
+            major=$((major + 1))
+            minor=0
+            patch=0
+            ;;
+        minor)
+            minor=$((minor + 1))
+            patch=0
+            ;;
+        patch)
+            patch=$((patch + 1))
+            ;;
+        *)
+            error "Uso: gh release <major|minor|patch>"
+            ;;
+    esac
+
+    echo "v${major}.${minor}.${patch}"
+}
+
+cmd_release() {
+    require_git_repo
+
+    local part=${1:-}
+    [[ -z "$part" ]] && error "Uso: gh release <major|minor|patch>"
+
+    local latest
+    latest=$(get_latest_tag)
+
+    if [[ -z "$latest" ]]; then
+        latest="v0.0.0"
+    fi
+
+    local new_version
+    new_version=$(increment_version "$latest" "$part")
+
+    if has_changes; then
+        git add -A
+        git commit -m "chore: release ${new_version}"
+    fi
+
+    git tag -a "$new_version" -m "Release ${new_version}"
+    git push
+    git push origin "$new_version"
+
+    success "Release creada: ${new_version}"
+}
+
+# ─────────────────────────────
+# DATE COMMIT
+# ─────────────────────────────
+cmd_date() {
+    require_git_repo
+
+    if ! has_changes; then
+        info "No hay cambios pendientes."
+        exit 0
+    fi
+
+    git add -A
+    git commit -m "✔ Update ${DATE}"
+    git push
+
+    success "Commit con fecha ${DATE} realizado."
+}
+
+# ─────────────────────────────
+# HELP
+# ─────────────────────────────
+cmd_help() {
+cat <<EOF
+gh v${VERSION}
+
+Comandos:
+  commit <type> "msg"    Conventional Commit + push
+                         Tipos: ${VALID_TYPES[*]}
+
+  date                   Commit automático con fecha
+
+  release <part>         Crear nueva versión SemVer + tag
+                         part: major | minor | patch
+
+  help                   Mostrar ayuda
+EOF
+}
+
+# ─────────────────────────────
+# ROUTER
+# ─────────────────────────────
+header
+
+case "${1:-help}" in
+    commit)  shift; cmd_commit "$@" ;;
+    date)    cmd_date ;;
+    release) shift; cmd_release "$@" ;;
+    help|*)  cmd_help ;;
+esac
