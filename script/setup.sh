@@ -7,12 +7,21 @@
 # │ WebSite: https://danielcalderon.vercel.app/        │
 # ╚════════════════════════════════════════════════════╝
 
-
+USUARIO=$(whoami)
+HOSTNAME=$(hostname)
+FECHA=$(date "+%d-%m-%Y")
+HORA=$(date "+%H:%M:%S")
+bgris='\033[40m'
+verde='\033[33m'
+amarillo='\033[34m'
+azul='\033[35m'
+n='\033[1m'
 blue="\e[0;36m"
 green="\e[0;32m"
 red_bg="\e[1;41m"
 yellow="\e[0;33m"
 close_color="\e[0m"
+reset='\033[0m'
 
 show_log() {
   echo -e "\n-----> $1"
@@ -33,20 +42,6 @@ show_error_log() {
 show_info_input() {
   echo -ne "\n$blue-----> $1 $close_color"
 }
-USUARIO=$(whoami)
-HOSTNAME=$(hostname)
-FECHA=$(date "+%d-%m-%Y")
-HORA=$(date "+%H:%M:%S")
-bgris='\033[40m'
-verde='\033[33m'
-amarillo='\033[34m'
-azul='\033[35m'
-n='\033[1m'
-reset='\033[0m'
-#echo "⬇️ Descargando..."
-#echo "📦 Instalando..."
-#echo "🔍 Corrigiendo dependencias si es necesario..."
-#echo "⬆️ Asegurando última versión..."
 
 clear
 echo -e ""
