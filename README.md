@@ -1,5 +1,5 @@
 <div align="center">
-<h1 style='margin: 0 0 2rem; font-size: 2.5rem;'>script-setup</h1 >
+<h1 style='margin: 0 0 2rem; font-size: 2.5rem;'>setup-kape</h1 >
 </div>
 <div align="center">
 
