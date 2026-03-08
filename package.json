@@ -3,7 +3,7 @@
   "version": "3.0.0",
   "description": "Script post instala de ubuntu",
   "bin": {
-    "setup-kape": "cli.js"
+    "post-install": "cli.js"
   },
   "repository": {
     "type": "git",

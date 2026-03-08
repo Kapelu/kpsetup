@@ -12,13 +12,17 @@ IFS=$'\n\t'
 
 USER_NAME=$(whoami)
 HOME_DIR=$HOME
+DESKTOP_DIR=$(xdg-user-dir DESKTOP)
 TMP_DIR="/tmp/script-setup-$RANDOM"
 REPO="https://github.com/Kapelu/script-setup.git"
 LOG_FILE="$HOME_DIR/setup-kape.log"
+green='\e[32m'
+reset='\e[0m'
+LOG="$HOME/post-install.log"
 
-log(){
- echo "$1"
- echo "$1" >> "$LOG_FILE"
+log() {
+    echo -e "\033[0;32m✅ $1\033[0m"
+    echo "$1" >> "$LOG"
 }
 
 detect_distro(){
@@ -82,9 +86,9 @@ copy_config(){
 
 create_desktop(){
 
- mkdir -p "$HOME_DIR/.local/share/applications"
+ mkdir -p "DESKTOP_DIR"
 
-cat <<EOF > "$HOME_DIR/.local/share/applications/btn_log.desktop"
+cat <<EOF > "DESKTOP_DIR/btn_log.desktop"
 [Desktop Entry]
 Name=Logout
 Comment=Cierra sesión con barra visual de 15 segundos
@@ -95,7 +99,7 @@ Type=Application
 Categories=Utility;
 EOF
 
-cat <<EOF > "$HOME_DIR/.local/share/applications/btn_shd.desktop"
+cat <<EOF > "DESKTOP_DIR/btn_shd.desktop"
 [Desktop Entry]
 Name=Apagar
 Comment=Apaga la computadora con barra visual de 15 segundos
@@ -106,7 +110,7 @@ Type=Application
 Categories=System;
 EOF
 
-cat <<EOF > "$HOME_DIR/.local/share/applications/btn_sus.desktop"
+cat <<EOF > "DESKTOP_DIR/btn_sus.desktop"
 [Desktop Entry]
 Name=Suspender
 Comment=Suspender la máquina con barra visual de 15 segundos
@@ -130,7 +134,9 @@ cleanup(){ rm -rf "$TMP_DIR"; }
 
 run_setup(){
 
- read -p "¿Desea ejecutar setup.sh? (s/n): " RESP
+printf "${green}📦 ¿Desea ejecutar setup.sh? (s/n): ${reset}"
+read RESP
+
 
  if [ "$RESP" = "s" ]; then
    bash "$HOME_DIR/script/setup.sh"
@@ -142,7 +148,7 @@ run_setup(){
 
 main(){
 
- log "Iniciando setup-kape"
+ log "Iniciando Secuencia Post-Install setup-kape"
 
  detect_distro
  check_git

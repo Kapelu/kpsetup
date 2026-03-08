@@ -16,11 +16,11 @@ HOSTNAME=$(hostname)
 FECHA=$(date "+%d-%m-%Y")
 HORA=$(date "+%H:%M:%S")
 
-APT_BASE=( wget gpg apt-transport-https chrome-gnome-shell gnome-browser-connector font-manager net-tools )
+APT_BASE=( wget gpg curl git apt-transport-https chrome-gnome-shell gnome-browser-connector font-manager net-tools )
 
-APT_DEV_TOOLS=( lsd neofetch dialog git curl build-essential usb-creator-gtk gparted )
+APT_DEV_TOOLS=( lsd neofetch dialog build-essential )
 
-SNAP_DEV_TOOLS=( proton-pass proton-mail sublime-text jdownloader2 vlc telegram-desktop )
+SNAP_DEV_TOOLS=( proton-pass proton-mail jdownloader2 vlc telegram-desktop )
 clear
 ### ───────────────────────────────
 ### COLORES ANSI UNIFICADOS
@@ -264,6 +264,38 @@ echo "✔ ProtonVPN instalado"
 }
 
 ########################################
+# Sublime_text
+########################################
+install_sublime() {
+
+    if command -v subl >/dev/null 2>&1; then
+        echo -e "${COLOR[magenta]}✔ Sublime text ya instalado${COLOR[reset]}"
+        return 0
+    fi
+
+    REPO_FILE="/etc/apt/sources.list.d/sublime-text.list"
+    KEY_FILE="/usr/share/keyrings/sublimehq.gpg"
+
+    echo -e "${COLOR[green]}📦  Instalando Sublime text${COLOR[reset]}"
+
+    if [ ! -f "$KEY_FILE" ]; then
+        echo "Agregando clave del repositorio"
+        wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg \
+        | gpg --dearmor \
+        | sudo tee "$KEY_FILE" > /dev/null
+    fi
+
+    if [ ! -f "$REPO_FILE" ]; then
+        echo "deb [signed-by=$KEY_FILE] https://download.sublimetext.com/ apt/stable/" \
+        | sudo tee "$REPO_FILE"
+    else
+        echo "Repositorio ya existe"
+    fi
+
+    sudo apt update
+    sudo apt install -y sublime-text
+}
+########################################
 # VSCODE
 ########################################
 
@@ -399,6 +431,7 @@ remove_firefox
 
 install_brave &
 install_chrome &
+install_sublime_text &
 install_vscode &
 install_protonvpn &
 install_node &
