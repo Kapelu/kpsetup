@@ -1,7 +1,8 @@
 {
   "name": "kapelu",
   "version": "3.5.0",
-  "description": "Script post instala de ubuntu",
+  "description": "Script post-install de Ubuntu",
+  "type": "commonjs",
   "bin": {
     "kapelu": "cli.js"
   },
@@ -9,12 +10,23 @@
     "type": "git",
     "url": "git+https://github.com/Kapelu/script-setup.git"
   },
-  "keywords": [],
-  "author": "Daniel Calderon - Kapelu",
+  "keywords": [
+    "ubuntu",
+    "setup",
+    "post-install",
+    "cli",
+    "script"
+  ],
+  "author": "Daniel Calderon",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/Kapelu/script-setup/issues"
   },
-  "homepage": "https://github.com/Kapelu/script-setup#readme"
+  "homepage": "https://github.com/Kapelu/script-setup#readme",
+  "files": [
+    "cli.js",
+    "install.sh",
+    "script/",
+    "config/"
+  ]
 }
