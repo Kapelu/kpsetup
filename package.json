@@ -1,9 +1,9 @@
 {
-  "name": "post-install",
+  "name": "kapelu",
   "version": "3.5.0",
   "description": "Script post instala de ubuntu",
   "bin": {
-    "post-install": "cli.js"
+    "kapelu": "cli.js"
   },
   "repository": {
     "type": "git",
