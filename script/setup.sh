@@ -393,20 +393,28 @@ install_apt "${APT_DEV_TOOLS[@]}"
 ########################################
 
 setup_ssh() {
-
+clear
 if [[ -f "$HOME/.ssh/id_ed25519" ]]; then
   echo "✔ SSH ya configurado"
   return
 fi
-
+echo -e '   ${COLOR[green]}*********************************************${COLOR[reset]}'
+echo -e '   ${COLOR[green]}*                                           *${COLOR[reset]}'
+echo -e '   ${COLOR[green]}*         ${COLOR[yelow]}Crear Clave SSH${COLOR[reset]}                   *${COLOR[reset]}'
+echo -e '   ${COLOR[green]}*                                           *${COLOR[reset]}'
+echo -e '   ${COLOR[green]}*********************************************${COLOR[reset]}'
+read -rp "Nombre de la clave SSH: " KEY_NAME
 read -rp "Email SSH: " EMAIL
 
-ssh-keygen -t ed25519 -C "$EMAIL" -f "$HOME/.ssh/id_ed25519" -N ""
+KEY_PATH="$HOME/.ssh/$KEY_NAME"
 
+ssh-keygen -t ed25519 -C "$EMAIL" -f "$KEY_PATH" -N ""
+
+ls -al ~/.ssh
 eval "$(ssh-agent -s)"
-ssh-add "$HOME/.ssh/id_ed25519"
+ssh-add "$KEY_PATH"
 
-cat "$HOME/.ssh/id_ed25519.pub"
+cat "$KEY_PATH.pub"
 
 }
 
