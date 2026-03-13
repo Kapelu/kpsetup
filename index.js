@@ -71,5 +71,8 @@ try {
   process.exit(1);
 }
 
+
+
+
 //const { execSync } = require("child_process");
 //execSync("bash install.sh", { stdio: "inherit" });
