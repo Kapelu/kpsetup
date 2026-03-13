@@ -65,12 +65,11 @@ try {
   autoUpdateGitHub();
 
   console.log("🚀 Ejecutando install.sh\n");
-  execSync("bash install.sh", { stdio: "inherit" });
+  execSync(`bash ${__dirname}/install.sh`, { stdio: "inherit" });
 } catch (err) {
   console.error("\n❌ Error ejecutando Post-Install:", err.message);
   process.exit(1);
 }
-
 
 
 
