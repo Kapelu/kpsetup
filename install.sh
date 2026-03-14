@@ -145,14 +145,27 @@ run_setup(){
 
 printf "${green}📦 ¿Desea ejecutar setup.sh? (s/n): ${reset}"
 read RESP
-chmod +x setup.sh
 
- if [ "$RESP" = "s" ]; then
-   bash "$HOME_DIR/script/setup.sh"
- else
-   system_update
-   system_cleanup
- fi
+if [ "$RESP" = "s" ]; then
+
+  FILE="$HOME_DIR/script/setup.sh"
+
+  if [ ! -f "$FILE" ]; then
+    echo "❌ Error: setup.sh no encontrado en $HOME_DIR/script/"
+    return 1
+  fi
+
+  if [ ! -x "$FILE" ]; then
+    chmod +x "$FILE"
+  fi
+
+  "$FILE"
+
+else
+  system_update
+  system_cleanup
+fi
+
 }
 
 main(){
