@@ -10,8 +10,8 @@
 set -Eeuo pipefail
 
 VERSION="2.0.0"
-DELAY=15
-BAR_LENGTH=15
+DELAY=10
+BAR_LENGTH=10
 MARGIN=5
 
 yellow="\e[0;33m"

@@ -86,41 +86,40 @@ copy_config(){
 
 create_desktop(){
 
- mkdir -p "DESKTOP_DIR"
+mkdir -p "$DESKTOP_DIR"
 
-cat <<EOF > "DESKTOP_DIR/btn_log.desktop"
+DATA=(
+"log|Logout|Cierra sesión en 10 segundos|system-log-out"
+"shd|Apagar|Apaga la PC en 10 segundos|system-shutdown"
+"sus|Suspender|Suspende la PC en 10 segundos|system-suspend"
+)
+
+for row in "${DATA[@]}"
+do
+
+IFS="|" read -r id name comment icon <<< "$row"
+
+file="$DESKTOP_DIR/btn_${id}.desktop"
+
+cat <<EOF > "$file"
 [Desktop Entry]
-Name=Logout
-Comment=Cierra sesión con barra visual de 15 segundos
-Exec=gnome-terminal --geometry=45x8 --hide-menubar -- bash -c "/home/$USER_NAME/script/btn-log.sh"
-Icon=system-log-out
+Name=$name
+Comment=$comment
+Exec=gnome-terminal --geometry=45x8 --hide-menubar -- bash -c "/home/$USER_NAME/script/btn-${id}.sh"
+Icon=$icon
 Terminal=false
 Type=Application
 Categories=Utility;
 EOF
 
-cat <<EOF > "DESKTOP_DIR/btn_shd.desktop"
-[Desktop Entry]
-Name=Apagar
-Comment=Apaga la computadora con barra visual de 15 segundos
-Exec=gnome-terminal --geometry=45x8 --hide-menubar -- bash -c "/home/$USER_NAME/script/btn-shd.sh"
-Icon=system-shutdown
-Terminal=false
-Type=Application
-Categories=System;
-EOF
+chmod +x "$file"
+gio set "$file" metadata::trusted true
 
-cat <<EOF > "DESKTOP_DIR/btn_sus.desktop"
-[Desktop Entry]
-Name=Suspender
-Comment=Suspender la máquina con barra visual de 15 segundos
-Exec=gnome-terminal --geometry=45x8 --hide-menubar -- bash -c "/home/$USER_NAME/script/btn-sus.sh"
-Icon=system-suspend
-Terminal=false
-Type=Application
-Categories=Utility;
-EOF
+done
+
+killall -q nautilus 2>/dev/null
 }
+
 
 system_update(){ sudo apt update -y; sudo apt upgrade -y; sudo apt full-upgrade -y; }
 
