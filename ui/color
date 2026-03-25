@@ -1,10 +1,26 @@
 #!/usr/bin/env bash
 # ╔════════════════════════════════════════════════════╗
-# │ Nombre – Descripción                               │
-# │ Versión: X.X                                       │
+# │ Logging Helper para kpsetup de Ubuntu              │
+# │ Versión: 4.0                                       │
 # │ Autor: Daniel Calderon - Kapelu                    │
-# │ Fecha: XX/XX/XXXX                                  │
+# │ Fecha: 19-02-2026                                  │
 # │ WebSite: https://danielcalderon.vercel.app/        │
 # │ Github: https://github.com/Kapelu                  │
 # ╚════════════════════════════════════════════════════╝
-clear
+declare -A COLOR=(
+  [reset]=$'\e[0m'
+  [bold]=$'\e[1m'
+  [italic]=$'\e[3m'
+
+  [info]=$'\e[36m'
+  [ok]=$'\e[32m'
+  [warn]=$'\e[33m'
+  [error]=$'\e[31m'
+
+  [yellow]=$'\e[0;33m'
+  [red]=$'\e[1;31m'
+  [green]=$'\e[0;32m'
+  [blue]=$'\e[34m'
+  [magenta]=$'\e[35m'
+  [gray]=$'\e[90m'
+)

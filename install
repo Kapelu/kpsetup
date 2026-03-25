@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+# ╔════════════════════════════════════════════════════╗
+# │ Install – Instalador Post-Install de Ubuntu        │
+# │ Versión: 4.0                                       │
+# │ Autor: Daniel Calderon - Kapelu                    │
+# │ Fecha: 19-02-2026                                  │
+# │ WebSite: https://danielcalderon.vercel.app/        │
+# │ Github: https://github.com/Kapelu                  │
+# ╚════════════════════════════════════════════════════╝
+set -Eeuo pipefail
+IFS=$'\n\t'
+clear
+
+# Variables
+# ------------------------------------------
+LOG_FILE="$HOME/setup.log"
+VERSION="3.0"
+USUARIO=$(whoami)
+HOSTNAME=$(hostname)
+FECHA=$(date "+%d-%m-%Y")
+HORA=$(date "+%H:%M:%S")
+APT_BASE=( wget gpg curl apt-transport-https chrome-gnome-shell gnome-browser-connector font-manager net-tools )
+APT_DEV_TOOLS=( lsd neofetch dialog build-essential )
+SNAP_DEV_TOOLS=( proton-pass proton-mail jdownloader2 vlc telegram-desktop )
+
+# Cargar utils
+source "$BASE_DIR/ui/banner"
+source "$BASE_DIR/ui/colors"
+source "$BASE_DIR/ui/log"
+source "$BASE_DIR/ui/logo"
+
+# Cargar scripts
+source "$BASE_DIR/script/helpers.sh"
+source "$BASE_DIR/script/package.sh"
+source "$BASE_DIR/script/system.sh"
+source "$BASE_DIR/script/banner.sh"
+source "$BASE_DIR/script/config.sh"
+source "$BASE_DIR/script/node.sh"
+source "$BASE_DIR/script/vscode.sh"
+source "$BASE_DIR/script/firefox_remove.sh"
+source "$BASE_DIR/script/brave.sh"
+source "$BASE_DIR/script/google.sh"
+source "$BASE_DIR/script/protonvpn.sh"
+source "$BASE_DIR/script/sublime.sh"
+
+# Redirección silenciosa (todo al log excepto mensajes visibles)
+# Guardar stdout original
+# ------------------------------------------
+exec 3>&1
+# El resto va al log
+exec 1>>"$LOG_FILE" 2>&1
+
+# Función para mostrar mensajes en pantalla
+# ------------------------------------------
+main() {
+  START=$SECONDS
+  clear
+  logo
+	echo ""
+  print_banner " 🚀 Iniciando Secuencia Post-Install..."
+	echo ""
+
+
+  system_update
+
+  config
+
+  install_node
+  install_vscode
+  remove_firefox
+  install_brave
+  install_google
+  install_protonvpn
+  install_sublime
+
+  system_cleanup
+
+
+  ELAPSED=$(( SECONDS - START ))
+  HORAS=$((ELAPSED / 3600))
+  MINUTOS=$(( (ELAPSED % 3600) / 60 ))
+  SEGUNDOS=$((ELAPSED % 60))
+
+  FECHA=$(date '+%Y-%m-%d')
+  HORA=$(date '+%H:%M:%S')
+
+  clear
+  print_banner "  🎉 Secuencia Post-Install completada con éxito!!!
+	Usuario: $USUARIO
+	Host: $HOSTNAME
+	Fecha: $FECHA
+	Hora de inicio: $HORA
+	Hora de fin   : $(date '+%H:%M:%S')
+	Tiempo total  : ${HORAS}h:${MINUTOS}m:${SEGUNDOS}s"
+}
+
+main "$@"
