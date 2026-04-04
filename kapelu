@@ -1,44 +1,55 @@
 #!/usr/bin/env bash
-# ╔════════════════════════════════════════════════════╗
-# │ Install – Instalador Post-Install de Ubuntu        │
-# │ Versión: 4.0                                       │
-# │ Autor: Daniel Calderon - Kapelu                    │
-# │ Fecha: 19-02-2026                                  │
-# │ WebSite: https://danielcalderon.vercel.app/        │
-# │ Github: https://github.com/Kapelu                  │
-# ╚════════════════════════════════════════════════════╝
-#// Permisos sudo activos
+# ┌<<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>┐
+# │  Install – Instalador Post-Install de Ubuntu   │
+# │  Versión: 4.0                                  │
+# │  Autor: Daniel Calderon - Kapelu               │
+# │  Fecha: 19-02-2026                             │
+# │  WebSite: https://danielcalderon.vercel.app/   │
+# │  Github: https://github.com/Kapelu             │
+# └<<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>┘
+#//                  ╔-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-╗
+#//                  ║    ELEVACION DE PRIVILEGIOS SUDO      ║
+#//                  ╚-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-╝
 if [[ $EUID -ne 0 ]]; then
 	clear
-	sleep 3 &
   printf "%s\n"
   printf "%b%-40s%b\n" "\e[3;32m[+] Elevando privilegios sudo...\e[0m\e[3;90m"
-  exec sudo -E bash "$0" "$@"
+  exec sudo -p "[sudo] contraseña: " bash "$0" "$@"
+  #exec sudo -E bash "$0" "$@"
   printf "%s\n" "\e[0m"
 fi
 
 set -Eeuo pipefail
 IFS=$'\n\t'
 
-#//                              VARIABLES
-#//                              ¯¯¯¯¯¯¯¯¯
+#//                  ╔-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-╗
+#//                  ║              VARIABLES                ║
+#//                  ╚-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-╝
 USUARIO=$(whoami)
 HOSTNAME=$(hostname)
 LOG_FILE="$HOME/setup.log"
 START_INITIAL="$(date +"%H:%M:%S")"
 APT_TOOLS=( 
 	curl
-	pciutils
   wget
+	pciutils
 	ca-certificates
-  gpg 
   apt-transport-https 
   chrome-gnome-shell 
   gnome-browser-connector 
+  build-essential
+  gpg 
+  git
+	#snapd 
+  #sudo systemctl enable --now snapd.socket
+  lsd 
+  dialog 
+  totem 
+  rhythmbox
+  inotify-tools
   net-tools
   lsd
   dialog
-  build-essential
   )
   SNAP_TOOLS=(
   jdownloader2
@@ -72,8 +83,9 @@ ICON_RUN="⚙️ "
 ICON_VERIFY="✔️ "
 ICON_VERIFAIL="⛔ "
 
-#//                              FUNCIONES UTILITARIAS
-#//                              ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+#//                  ╔-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-╗
+#//                  ║         FUNCIONES UTILITARIAS         ║
+#//                  ╚-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-╝
 #* Crea $HOME/setup.log 
 file_log() {
   exec 3>&1
@@ -109,19 +121,20 @@ elapsed_time() {
 }
 #* log_*: maneja los los en pantalla y archivo.log
 log_print() {
-  local type="$1"
+  local type="$1" 
   local msg="$2"
 
   local icon color text
 
   case "$type" in
-    info)   icon="$ICON_INFO";     color="yellow" ;;
-    ok)     icon="$ICON_OK";       color="yellow" ;;
-    warn)   icon="$ICON_WARN";     color="yellow" ;;
-    error)  icon="$ICON_ERROR";    color="yellow" ;;
-    run)    icon="$ICON_RUN";      color="yellow" ;;
-    verify) icon="$ICON_VERIFAIL"; color="yellow";;
-    *)      icon="";               color="yellow" ;;
+    info)     icon="$ICON_INFO";     color="yellow" ;;
+    ok)       icon="$ICON_OK";       color="yellow" ;;
+    warn)     icon="$ICON_WARN";     color="yellow" ;;
+    error)    icon="$ICON_ERROR";    color="yellow" ;;
+    run)      icon="$ICON_RUN";      color="yellow" ;;
+    verify)   icon="$ICON_VERIFY";   color="yellow";;
+    verifail) icon="$ICON_VERIFAIL"; color="yellow";;
+    *)        icon="";               color="yellow" ;;
   esac
 
   text="$msg"
@@ -143,21 +156,23 @@ log_print() {
   } 200>/tmp/kapelu.lock
 }
 
-#//                                CONFIGURACIONES UI
-#//                                ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+#//                  ╔-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-╗
+#//                  ║            CONFIGURACIONES UI         ║
+#//                  ╚-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-╝
 logo() {
   {
     printf "%b%-40s%b\n" "${COLOR[ok]}"
-    cat << "EOF"
-  ██   ██  ██████   ███████  ███████  ████████  ██    ██  ██████
-  ██  ██   ██   ██  ██       ██          ██     ██    ██  ██   ██
-  █████    ██████   ███████  █████       ██     ██    ██  ██████
-  ██  ██   ██            ██  ██          ██      ██  ██   ██
-  ██   ██  ██       ███████  ███████     ██       ████    ██
-EOF
+
+    printf "  ██   ██  ██████   ███████  ███████  ████████  ██    ██  ██████\n"
+    printf "  ██  ██   ██   ██  ██       ██          ██     ██    ██  ██   ██\n"
+    printf "  █████    ██████   ███████  █████       ██     ██    ██  ██████\n"
+    printf "  ██  ██   ██            ██  ██          ██      ██  ██   ██\n"
+    printf "  ██   ██  ██       ███████  ███████     ██       ████    ██\n"
+
     printf "%b%-40s%b\n" "${COLOR[reset]}"
   } >&3
 }
+
 print_banner() {
   local msg="$1"
   {
@@ -168,30 +183,130 @@ print_banner() {
   } >&3
 }
 
-#//                                FUNCIONES CORE
-#//                                ¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+#//                  ╔-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-╗
+#//                  ║           FUNCIONES CORE              ║
+#//                  ╚-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-╝
 #* Valida si la distro es UBUNTU
-if [ -f /etc/os-release ]; then
-  . /etc/os-release
-else
-  clear >&3
-  print_banner " ⛔ No se pudo detectar la Distro‼️"
-  sleep 3
-	exit 1
-fi
-case "$ID" in
-  ubuntu|debian|linuxmint|pop|zorin|elementary|neon)
-    ;;
-  *)
-		clear >&3
-    print_banner " ⛔ Distro no soportada: $ID"
-    sleep 3
-    exit 1
-    ;;
-esac
+VALIDAR_DISTRO() {
+    log_print info "Validando distribución..."
+    sleep 5
 
-#* INSTALL_SNAP_TOOLS: Instala paquetes snap declarados en SNAP_TOOLS
-install_snap_apps() {
+
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+    else
+        clear >&3
+        print_banner " ⛔ No se pudo detectar la Distro‼️"
+        sleep 3
+        exit 1
+    fi
+
+    case "$ID" in
+        ubuntu|debian|linuxmint|pop|zorin|elementary|neon)
+            log_print ok "Distro soportada: $ID"
+						sleep 2
+						log_print info "Iniciando sistema..."
+						sleep 3
+            ;;
+        *)
+            clear >&3
+            print_banner " ⛔ Distro no soportada: $ID"
+            sleep 3
+            exit 1
+            ;;
+    esac
+}
+#* Funcion que actualiza APT
+UPDATE(){
+	log_print info "Actualizando sistema..."
+
+    if ! apt-get update; then
+        log_print verifail " Error en apt-get update"
+        return 1
+    fi
+
+    if ! apt-get dist-upgrade -y; then
+        log_print "Error en dist-upgrade"
+        return 1
+    fi
+
+    log_print ok "Sistema actualizado correctamente."
+}
+#* Funcion de limpieza del sistema
+CLEAN_SYSTEM() {
+    log_print info "🧹 Iniciando limpieza del sistema..."
+
+    # Limpiar paquetes innecesarios
+    log_print ok "➤ Eliminando paquetes huérfanos..."
+    apt-get autoremove -y
+
+    # Limpiar caché de paquetes descargados
+    log_print ok "➤ Limpiando caché de APT..."
+    apt-get clean
+    apt-get autoclean
+
+    # Limpiar logs antiguos
+    log_print ok "➤ Limpiando logs antiguos..."
+    journalctl --vacuum-time=7d
+
+    # Limpiar miniaturas (thumbnails)
+    log_print ok "➤ Eliminando caché de miniaturas..."
+    rm -rf "$HOME/.cache/thumbnails/"*
+
+    # Limpiar caché de usuario
+    log_print ok "➤ Limpiando caché del usuario..."
+    rm -rf "$HOME/.cache/"*
+
+    # Limpiar paquetes snap si existen
+    if command -v snap >/dev/null 2>&1; then
+        log_print ok "➤ Limpiando versiones antiguas de Snap..."
+        snap list --all | awk '/disabled/{print $1, $3}' | while read snapname revision; do
+            snap remove "$snapname" --revision="$revision"
+        done
+    fi
+
+		# Eliminar paquetes en estado "rc" (residuos de configs)
+		log_print ok "➤ Eliminando paquetes residuales..."
+		dpkg -l | awk '/^rc/ { print $2 }' | xargs -r apt-get purge -y
+
+    log_print " Limpieza completada."
+		sleep 3
+}
+#* Función full update que llama a update_system y agrega Snap, Flatpak y firmware
+FULL_UPDATE() {
+    log_print info "Iniciando actualización completa del sistema..."
+
+    # Llamada a la función UPDATE
+    UPDATE || return 1
+
+    # Snap
+    if command -v snap >/dev/null 2>&1; then
+        log_print ok "➤ Actualizando paquetes Snap..."
+        snap refresh 2>/dev/null
+    fi
+
+    # Flatpak
+    if command -v flatpak >/dev/null 2>&1; then
+        log_print ok " ➤ Actualizando paquetes Flatpak..."
+        flatpak update -y 2>/dev/null
+    fi
+
+    # Firmware (solo si es UEFI) / Microcode
+    if [ -d /sys/firmware/efi ]; then
+        if command -v fwupdmgr >/dev/null 2>&1; then
+            log_print info "➤ Actualizando firmware (UEFI)..."
+            fwupdmgr refresh >/dev/null 2>&1
+            fwupdmgr update >/dev/null 2>&1
+        fi
+    else
+        log_print warn " ➤ Sistema en modo Legacy BIOS, se omite firmware."
+    fi
+
+    log_print ok "Actualización completa finalizada."
+}
+
+#* INSTALL_SNAP: Instala paquetes snap declarados en SNAP_TOOLS
+INSTALL_SNAP() {
 
     log_print info "Instalando paquetes snap desde SNAP_TOOLS..."
 
@@ -238,19 +353,21 @@ install_snap_apps() {
 
     done
 
-    log_print ok "Proceso de instalación snap finalizado"
+    log_print ok "Instalación de paquetes SNAP finalizado"
 }
 
-#* INSTALL_APT_TOOLS: Instala paquetes usando APT_TOOLS
-INSTALL_APT_TOOLS() {
+#* INSTALL_APT: Instala paquetes usando APT_TOOLS
+INSTALL_APT() {
   local pkg
+  log_print info "Instalando paquetes desde APT_TOOLS..."
+
   for pkg in "${APT_TOOLS[@]}"; do
     if ! dpkg -s "$pkg" &>/dev/null; then
       log_print run "Instalando paquete: $pkg..."
       
-      if ! sudo apt-get install -y "$pkg"; then
+      if ! apt-get install -y "$pkg"; then
         log_print warn "Paquete defectuoso: $pkg. Intentando desinstalar..."
-        sudo apt-get remove -y "$pkg" 2>/dev/null
+        apt-get remove -y "$pkg" 2>/dev/null
       else
         log_print ok "Instalado correctamente: $pkg"
       fi
@@ -258,6 +375,8 @@ INSTALL_APT_TOOLS() {
       log_print info "Ya está instalado: $pkg"
     fi
   done
+  log_print ok "Instalación de pauqetes APT finalizado"
+
 }
 
 #* OS_INFO: Brinda información del sistema
@@ -273,14 +392,14 @@ OS_INFO() {
   {
     source /etc/os-release
     printf "%s\n" "$NAME|$VERSION|$VERSION_ID|$ID_LIKE" > "$TMP_DIR_OS_INFO/os"
-    log_print verify "OS info"
+    log_print verify " OS info"
   } &
 
   {
     CPU=$(grep "model name" /proc/cpuinfo | head -n1 | cut -d ':' -f2 | xargs)
     CORES=$(nproc)
     printf "%s\n" "$CPU|$CORES" > "$TMP_DIR_OS_INFO/cpu"
-    log_print verify "CPU info"
+    log_print verify " CPU info"
   } &
 
   {
@@ -292,14 +411,14 @@ OS_INFO() {
       | sed -E 's/\(rev [^)]+\)//g' \
       | xargs)
     printf "%s\n" "$GPU" > "$TMP_DIR_OS_INFO/gpu"
-    log_print verify "GPU info"
+    log_print verify " GPU info"
   } &
 
   {
     PKG=$(dpkg -l 2>/dev/null | grep -c "^ii")
     SNAP=$(snap list 2>/dev/null | tail -n +2 | wc -l)
     printf "%s\n" "$PKG|$SNAP" > "$TMP_DIR_OS_INFO/pkg"
-    log_print verify "Packages info"
+    log_print verify " Packages info"
   } &
 
   {
@@ -307,7 +426,7 @@ OS_INFO() {
     VENDOR=$(cat /sys/devices/virtual/dmi/id/sys_vendor 2>/dev/null || printf "")
     BIOS=$(cat /sys/devices/virtual/dmi/id/bios_version 2>/dev/null || printf "N/A")
     printf "%s\n" "$VENDOR $MODEL|$BIOS" > "$TMP_DIR_OS_INFO/hw"
-    log_print verify "Hardware info"
+    log_print verify " Hardware info"
   } &
 
   {
@@ -317,7 +436,7 @@ OS_INFO() {
     GNOME=$(gnome-shell --version 2>/dev/null | awk '{print $3}' || printf "N/A")
     SESSION=${XDG_SESSION_TYPE:-unknown}
     printf "%s\n" "$KERNEL|$OS_TYPE|$GNOME|$SESSION" > "$TMP_DIR_OS_INFO/sw"
-    log_print verify "Software info"
+    log_print verify " Software info"
   } &
 
   wait
@@ -421,8 +540,10 @@ RENDER_OSINFO() {
 	} >&3
 }
 
-#// Función para mostrar mensajes en pantalla
-#// ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+#//                  ╔-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-╗
+#//                  ║            FUNCION MAIN()             ║
+#//                  ╚-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-╝
+
 main() {
   exec 3>&1
   START=$SECONDS
@@ -432,7 +553,10 @@ main() {
 	printf "%s\n" ""
   print_banner " 	   🚀 Iniciando Secuencia Post-Install..."
 	printf "%s\n" ""
-	INSTALL_APT_TOOLS
+	VALIDAR_DISTRO
+	UPDATE
+	INSTALL_SNAP
+	INSTALL_APT
 
   # update
 	# install_apt
@@ -447,6 +571,7 @@ main() {
 	# os_info
   # cleanup
   OS_INFO
+	FULL_UPDATE
   INFO_OSINFO
   sleep 10
 	TIEMPO_TOTAL="$(elapsed_time "$START")"
