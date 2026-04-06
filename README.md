@@ -44,8 +44,7 @@ Es una colección de utilidades de terminal ***post-install*** orientadas al ren
 </div>
 
 
-1. ***Copiar el archivo kpsetup de*** https://github.com/Kapelu/kpsetup/blob/main/kapelu
-
+1. ***Copiar el archivo kpsetup o descargarlo***
 2. ***Crear archivo como kpsetup o el nombre que elijan.***
 
 3. ***Dar permisos***
