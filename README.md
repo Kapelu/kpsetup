@@ -1,9 +1,8 @@
 <div align="center">
-<h1 style='margin: 0 0 2rem; font-size: 2.5rem;'>🔧 setup-kapelu</h1 >
+<h1 style='margin: 0 0 2rem; font-size: 2.5rem;'>kpsetup</h1 >
 </div>
 <div align="center">
 
-[![npm version](https://img.shields.io/npm/v/setup-kapelu.svg)](https://www.npmjs.com/package/kpsetup)
 ![Bash](https://img.shields.io/badge/Bash-4%2B-blue)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04%2B-orange)
 ![License](https://img.shields.io/badge/License-MIT-blue)
@@ -15,12 +14,58 @@
 <div align="center">
 
 ## Descripción general
+</div>
 
-`script-setup` es una colección de utilidades de terminal ***post-install*** orientadas al rendimiento, diseñadas para mejorar la productividad de los desarrolladores en sistemas Ubuntu. El proyecto prioriza la baja sobrecarga, la arquitectura modular de Bash y un comportamiento de ejecución predecible.
+<div align="justify">
+
+kpsetup no es solo un script de instalación: está diseñado como un sistema reproducible, mantenible y robusto para levantar entornos completos de forma consistente.
+
+`kpsetup` es una colección de utilidades de terminal ***post-install*** orientadas al rendimiento, diseñadas para mejorar la productividad de los desarrolladores en sistemas Ubuntu. El proyecto prioriza la baja sobrecarga, la arquitectura modular de Bash y un comportamiento de ejecución predecible.
+
+<div align="center">
+
+## Características
+
+</div>
+
+✅ Instalación automatizada de dependencias
+
+✅ Separación de ejecución (root / usuario)
+
+✅ Funciones idempotentes
+
+✅ Sistema de logging estructurado
+
+✅ Validación de comandos instalados
+
+✅ Manejo de errores centralizado
+
+
+<div align="center">
 
 ---
 ## ⚡ Instalación Rápida
+
 </div>
+
+Copiar el archivo kpsetup de [text](https://github.com/Kapelu/kpsetup/blob/main/kapelu)
+
+1. Clonar el repositorio
+
+git clone https://github.com/tu-usuario/kpsetup.git
+cd kpsetup
+
+2. Dar permisos
+
+chmod +x kpsetup.sh
+
+3. Ejecutar
+
+./kpsetup.sh
+
+
+
+
 
 
 ```bash

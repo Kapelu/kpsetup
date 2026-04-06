@@ -60,7 +60,9 @@ declare -gA COLOR=(
   [magenta]=$'\e[35m'   # Magenta / violeta
   [cyan]=$'\e[36m'      # Cyan
   [white]=$'\e[37m'     # Blanco
-  [gray]=$'\e[90m'      # fondo normal
+  [gray]=$'\e[90m'      # Gris (foreground)
+  [green_gray]=$'\e[32;40m'    # verde brillante + fondo negro
+  [yellow_gray]=$'\e[93;40m'   # amarillo brillante + fondo negro
 )
 # Iconos de .log
 ICON_INFO="🟢"
