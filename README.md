@@ -14,18 +14,14 @@
 <div align="center">
 
 ## Descripción general
-</div>
-
 <div align="justify">
 
-kpsetup no es solo un script de instalación: está diseñado como un sistema reproducible, mantenible y robusto para levantar entornos completos de forma consistente.
+`kpsetup` no es solo un script de instalación: está diseñado como un sistema reproducible, mantenible y robusto para levantar entornos completos de forma consistente.
 
-`kpsetup` es una colección de utilidades de terminal ***post-install*** orientadas al rendimiento, diseñadas para mejorar la productividad de los desarrolladores en sistemas Ubuntu. El proyecto prioriza la baja sobrecarga, la arquitectura modular de Bash y un comportamiento de ejecución predecible.
-
+Es una colección de utilidades de terminal ***post-install*** orientadas al rendimiento, diseñadas para mejorar la productividad de los desarrolladores en sistemas Ubuntu. El proyecto prioriza la baja sobrecarga, la arquitectura modular de Bash y un comportamiento de ejecución predecible.
 <div align="center">
 
 ## Características
-
 </div>
 
 ✅ Instalación automatizada de dependencias
@@ -40,70 +36,40 @@ kpsetup no es solo un script de instalación: está diseñado como un sistema re
 
 ✅ Manejo de errores centralizado
 
-
+✅ Permite ser fácilmente modficado en cuanto a preferencias de instalación
 <div align="center">
 
----
 ## ⚡ Instalación Rápida
 
 </div>
 
-Copiar el archivo kpsetup de [text](https://github.com/Kapelu/kpsetup/blob/main/kapelu)
 
-1. Clonar el repositorio
+1. ***Copiar el archivo kpsetup de*** https://github.com/Kapelu/kpsetup/blob/main/kapelu
 
-git clone https://github.com/tu-usuario/kpsetup.git
-cd kpsetup
+2. ***Crear archivo como kpsetup o el nombre que elijan.***
 
-2. Dar permisos
-
-chmod +x kpsetup.sh
-
-3. Ejecutar
-
-./kpsetup.sh
-
-
-
-
-
-
-```bash
-# Instalar globalmente vía npm
-```
-```
-setup-kapelu/
-├── bin/
-│   └── setup-kapelu          # Script principal ejecutable
-├── lib/
-│   ├── config/
-│   │   ├── .bashrc           # Configuración bash personalizada
-│   │   └── protect-main.json # Archivo de configuración de `main` en Github
-│   └── scripts/
-│       ├── btn-log.sh        # Script: cerrar sesión
-│       ├── btn-shd.sh        # Script: apagar
-│       ├── btn-sus.sh        # Script: suspender
-│       └── node-clean.sh     # Script: limpieza node_modules
-├── src/
-│   └── setup-kapelu.sh       # Fuente con documentación completa
-├── package.json
-├── README.md
-└── LICENSE
-```
+3. ***Dar permisos***
+    ```bash
+    chmod +x kpsetup
+    ```
+4. ***Ejecutar***
+    ```bash  
+    ./kpsetup
+    ``` 
 <div align="center">
 
-## 📦 Modulos
-
+## ♻️ Idempotencia
 </div>
 
-⚠️ Requisito importante
+Las funciones están diseñadas para poder ejecutarse múltiples veces sin efectos secundarios.
+Ejemplo:
+* No reinstala paquetes si ya existen
+* No rompe configuraciones previas
+<div align="center">
 
-Esto solo funciona en Bash 4+ (por declare -A).
+## ⚙️ Modificaciones
+<div align="justify">
 
-En sistemas viejos (ej: macOS antiguo con Bash 3), rompe.
+Las funciones están diseñadas para poder modificarlas en cuanto a gusto de programas a instalar, siempre teniendo en cuenta el uso de las funciones propias del script.
 
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
+</div>
