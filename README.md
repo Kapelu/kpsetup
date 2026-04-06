@@ -71,5 +71,8 @@ Ejemplo:
 <div align="justify">
 
 Las funciones están diseñadas para poder modificarlas en cuanto a gusto de programas a instalar, siempre teniendo en cuenta el uso de las funciones propias del script.
+<div align="center">
 
+## ⚠️ PREPARANDO FUNCIONES NUEVA Y MODIFICACIONES ‼️
 </div>
+
