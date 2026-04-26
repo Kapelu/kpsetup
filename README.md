@@ -56,6 +56,18 @@ Es una colección de utilidades de terminal ***post-install*** orientadas al ren
     ```bash  
     ./kpsetup
     ``` 
+
+<div align="center">
+
+## 🔐 Contexto de ejecución
+</div>
+kpsetup distingue automáticamente:
+
+- root → paquetes del sistema
+- usuario → configuración personal
+
+Esto evita conflictos de permisos y setups inconsistentes.
+
 <div align="center">
 
 ## ♻️ Idempotencia
@@ -65,14 +77,27 @@ Las funciones están diseñadas para poder ejecutarse múltiples veces sin efect
 Ejemplo:
 * No reinstala paquetes si ya existen
 * No rompe configuraciones previas
+* Mantiene consistencia
 <div align="center">
 
+## 📈 Impacto
+
+| Antes | Después |
+|------|--------|
+| 2–3 horas setup | 10–15 minutos |
+| Errores manuales | Automatización |
+| Entornos inconsistentes | Reproducibilidad |
+
 ## ⚙️ Modificaciones
+
 <div align="justify">
 
 Las funciones están diseñadas para poder modificarlas en cuanto a gusto de programas a instalar, siempre teniendo en cuenta el uso de las funciones propias del script.
+</div>
+
 <div align="center">
 
 ## ⚠️ PREPARANDO FUNCIONES NUEVA Y MODIFICACIONES ‼️
 </div>
+
 

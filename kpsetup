@@ -670,6 +670,7 @@ INSTALL_CODE() {
   fi
 
   log_print run "Instalando VSCode..."
+	$SUDO snap install sublime-text --classic
   if ! $SUDO apt-get install -y code; then
     log_print error "Error instalando VS Code"
     return 1
@@ -680,50 +681,7 @@ INSTALL_CODE() {
 
 }
 #* INSTALL_SUBLIMETEXT: Instala sublime text desde el repositorio de APT
-INSTALL_SUBLIMETEXT() {
-  log_print INFO "Instalando Sublime Text (APT)..."
-
-  local KEYRING="/etc/apt/keyrings/sublimehq-pub.asc"
-  local SOURCE_FILE="/etc/apt/sources.list.d/sublime-text.sources"
-
-  # --- LIMPIEZA PREVIA ---
-  log_print INFO "Eliminando configuraciones previas..."
-  $SUDO rm -f "$SOURCE_FILE"
-  $SUDO rm -f "$KEYRING"
-
-  # --- PREPARAR DIRECTORIO KEYRINGS ---
-  $SUDO install -d -m 0755 /etc/apt/keyrings
-
-  # --- IMPORTAR CLAVE GPG ---
-  log_print INFO "Importando clave GPG..."
-  wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg \
-    |$SUDO tee "$KEYRING" > /dev/null
-
-  $SUDO chmod 0644 "$KEYRING"
-
-  # --- AGREGAR REPOSITORIO (STABLE) ---
-  log_print INFO "Agregando repositorio APT (stable)..."
-  cat <<EOF | $SUDO tee "$SOURCE_FILE" > /dev/null
-Types: deb
-URIs: https://download.sublimetext.com/
-Suites: apt/stable/
-Signed-By: $KEYRING
-EOF
-
-  # --- ACTUALIZAR E INSTALAR ---
-  log_print INFO "Actualizando índices APT..."
-  $SUDO apt-get update -y
-
-  log_print INFO "Instalando Sublime Text..."
-  if $SUDO apt-get install -y sublime-text; then
-    log_print OK "Sublime Text instalado correctamente"
-    log_print ok "Versión" subl --version
-
-  else
-    log_print ERROR "Error al instalar Sublime Text"
-    return 1
-  fi
-}
+#INSTALL_SUBLIMETEXT() {}
 #* INSTALL_PROTONVPN: Instala protonVPN desde el repositorio de APT
 INSTALL_PROTONVPN() {
   log_print INFO "Instalando Proton VPN (APT repo oficial)..."
@@ -797,104 +755,9 @@ INSTALL_TIMESHIFT() {
     return 1
   fi
 }
-#* PERSONALIZE_IBNTU: Función que personaliza Escritorio y temas visuales, energia, dock y seguridad
+#* PERSONALIZE_UBUNTU: Función que personaliza Escritorio y temas visuales, energia, dock y seguridad
 PERSONALIZE_UBUNTU() {
-  SCRIPT_DIR="$HOME/script/btn-desktop"
-  DESKTOP_DIR="$(xdg-user-dir DESKTOP 2>/dev/null || echo "$HOME/Desktop")"
-
-  mkdir -p "$SCRIPT_DIR" "$DESKTOP_DIR"
-
   log_print info "Personalizando Ubuntu 24.04..."
-
-  # ENERGÍA
-  command -v powerprofilesctl &>/dev/null && powerprofilesctl set balanced
-
-  if command -v gsettings &>/dev/null; then
-    gsettings set org.gnome.settings-daemon.plugins.power idle-dim true
-    gsettings set org.gnome.desktop.session idle-delay 900
-    gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'suspend'
-    gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 900
-    gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
-    gsettings set org.gnome.settings-daemon.plugins.power power-button-action 'power-off'
-    gsettings set org.gnome.desktop.interface show-battery-percentage true
-    # APARIENCIA
-    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-    gsettings set org.gnome.desktop.interface gtk-theme 'Yaru-dark'
-    gsettings set org.gnome.desktop.interface icon-theme 'Yaru'
-    # ESCRITORIO
-    gsettings writable org.gnome.shell.extensions.ding icon-size 2>/dev/null && {
-      gsettings set org.gnome.shell.extensions.ding icon-size 'small'
-      gsettings set org.gnome.shell.extensions.ding start-corner 'top-right'
-      gsettings set org.gnome.shell.extensions.ding show-home false
-    }
-    # DOCK
-    gsettings writable org.gnome.shell.extensions.dash-to-dock dock-position 2>/dev/null && {
-      gsettings set org.gnome.shell.extensions.dash-to-dock dock-position 'LEFT'
-      gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 32
-      gsettings set org.gnome.shell.extensions.dash-to-dock show-mounts true
-      gsettings set org.gnome.shell.extensions.dash-to-dock show-trash false
-      gsettings set org.gnome.shell.extensions.dash-to-dock show-mounts-only-mounted true
-      gsettings set org.gnome.shell.extensions.dash-to-dock show-mounts-network false
-    }
-    # PRIVACIDAD
-    gsettings set org.gnome.desktop.screensaver lock-enabled true
-    gsettings set org.gnome.desktop.screensaver ubuntu-lock-on-suspend true
-  fi
-  # .bashrc
-  log_print info "➤ Reemplazando .bashrc..."
-  cat > "$HOME/.bashrc" <<'EOF'
-# (tu contenido original intacto)
-EOF
-  # SUDOERS
-  log_print info "➤ Configurando sudoers..."
-  $SUDO bash -c "cat > /etc/sudoers.d/custom <<EOF
-%sudo ALL=(ALL) NOPASSWD:$HOME/script/*
-EOF"
-  $SUDO chmod 440 /etc/sudoers.d/custom
-  $SUDO visudo -cf /etc/sudoers
-  # SCRIPTS
-  log_print info "➤ Creando scripts..."
-  # (asumo que ya los creás antes o los pegás como en tu versión original)
-  # fix bug shutdown
-  sed -i 's/cho -ne/echo -ne/' "$SCRIPT_DIR/btn-shd" 2>/dev/null || true
-  chmod +x "$SCRIPT_DIR/"*
-  # DESKTOP ENTRIES
-  log_print info "➤ Creando accesos directos..."
-  cat > "$DESKTOP_DIR/Suspender.desktop" <<EOF
-[Desktop Entry]
-Name=Suspender
-Comment=Suspender la máquina con barra visual
-Exec=gnome-terminal --geometry=45x8 --hide-menubar -- bash -c "$SCRIPT_DIR/btn-sus"
-Icon=system-suspend
-Terminal=false
-Type=Application
-Categories=Utility;
-EOF
-  cat > "$DESKTOP_DIR/Logout.desktop" <<EOF
-[Desktop Entry]
-Name=Logout
-Comment=Cierra sesión con barra visual
-Exec=gnome-terminal --geometry=45x8 --hide-menubar -- bash -c "$SCRIPT_DIR/btn-log"
-Icon=system-log-out
-Terminal=false
-Type=Application
-Categories=Utility;
-EOF
-  cat > "$DESKTOP_DIR/Apagar.desktop" <<EOF
-[Desktop Entry]
-Name=Apagar
-Comment=Apaga la computadora con barra visual
-Exec=gnome-terminal --geometry=45x8 --hide-menubar -- bash -c "$SCRIPT_DIR/btn-shd"
-Icon=system-shutdown
-Terminal=false
-Type=Application
-Categories=System;
-EOF
-  chmod +x "$DESKTOP_DIR/"*.desktop
-  for f in "$DESKTOP_DIR"/*.desktop; do
-    gio set "$f" metadata::trusted true 2>/dev/null || true
-  done
-  log_print ok "✔ Botones creados en el escritorio"
   log_print ok "✔ Personalización completa"
 }
 #* OS_INFO: Brinda información del sistema
@@ -1076,13 +939,11 @@ main() {
   REMOVE_FIREFOX
 	INSTALL_NODE
   INSTALL_CODE
-  INSTALL_SUBLIMETEXT
   INSTALL_PROTONVPN
   INSTALL_TIMESHIFT
+  #PERSONALIZE_UBUNTU
   OS_INFO
   FULL_UPDATE
-	log_print info "presionar CTRL + C para para"
-	sleep 15
   INFO_OSINFO
   TIEMPO_TOTAL="$(elapsed_time "$START")"
   clear >&3
