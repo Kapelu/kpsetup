@@ -952,16 +952,12 @@ git_prompt_status() {
   fi
 }
 
+# CACHE PROMPT (sin overhead)
 update_prompt_cache() {
-  if [ "$PWD" != "$__LAST_PWD" ]; then
-    __LAST_PWD="$PWD"
-
-    local manager
-    manager=$(detect_package_manager)
-    __PKG_MANAGER=$([ -n "$manager" ] && echo "[$manager]" || echo "")
-
-    __GIT_BRANCH="$(git_prompt_status)"
-  fi
+  local manager
+  manager=$(detect_package_manager)
+  __PKG_MANAGER=$([ -n "$manager" ] && echo "[$manager]" || echo "")
+  __GIT_BRANCH="$(git_prompt_status)"
 }
 
 PROMPT_COMMAND=update_prompt_cache
